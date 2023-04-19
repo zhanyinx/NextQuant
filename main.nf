@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 process nextquant{
-    conda '/hpcnfs/data/DIMA/zhan/NextQuant/maxquant.yml'
+    conda '/hpcnfs/techunits/bioinformatics/software/NextQuant/env/maxquant.yml'
     cpus params.threads
     maxRetries = 3
     memory { 10.GB * task.attempt }
