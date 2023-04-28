@@ -3,23 +3,22 @@
 nextflow.enable.dsl=2
 
 process nextquant{
-    conda '/hpcnfs/techunits/bioinformatics/software/NextQuant/env/maxquant.yml'
+    conda '/hpcnfs/techunits/bioinformatics/software/NextQuant/conda/'
     cpus params.threads
     maxRetries = 3
-    memory { 10.GB * task.attempt }
+    memory { 15.GB * task.attempt }
 
     publishDir "${params.outdir}/${params.sample_name}", mode: 'copy'
     output:
-        file("txt/*.txt")
+        file("tmp/combined")
     
     script:
     """
-        update_params.py -x ${params.xml} -t ${params.threads} -f ${params.fasta} -r ${params.raw_folder} -o params.xml
-        ## run MQ
-        export PATH=\$PATH:/usr/local/lib/dotnet/
+        mkdir tmp
+        cp ${params.raw_folder}/*raw tmp/
+        currdir=`pwd`
+        update_params.py -x ${params.xml} -t ${params.threads} -f ${params.fasta} -r \$currdir/tmp -o params.xml
         maxquant params.xml
-        cp -r ${params.raw_folder}/combined/txt .
-        rm -r ${params.raw_folder}/
     """
 }
 
